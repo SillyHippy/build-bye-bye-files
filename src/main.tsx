@@ -4,13 +4,12 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Performance monitoring for Cloudflare Pages
-if (typeof window !== 'undefined') {
-  // Log performance metrics
-  window.addEventListener('load', () => {
-    const perfData = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    console.log('Page Load Time:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
-  });
+// Enhanced error boundary for better development experience
+if (import.meta.env.DEV) {
+  // Enable React DevTools profiler in development
+  window.__REACT_DEVTOOLS_GLOBAL_HOOK__?.onCommitFiberRoot = (id: number, root: any) => {
+    console.log('React commit:', { id, root });
+  };
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
