@@ -2,33 +2,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { componentTagger } from "lovable-tagger"
 
 // Latest Lovable Vite configuration with enhanced optimizations
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     // Enhanced component tagger for latest Lovable features
-    ...(mode === 'development' ? [
-      {
-        name: 'lovable-tagger-enhanced',
-        async configResolved() {
-          if (mode === 'development') {
-            try {
-              const { componentTagger } = await import('lovable-tagger');
-              return componentTagger({
-                // Enhanced tagging for better debugging
-                tagAllComponents: true,
-                includeProps: true,
-                includeState: true
-              });
-            } catch (error) {
-              console.warn('lovable-tagger not available:', error.message);
-            }
-          }
-        }
-      }
-    ] : [])
-  ],
+    mode === 'development' && componentTagger()
+  ].filter(Boolean),
   
   // Enhanced path resolution with latest aliases
   resolve: {
@@ -45,7 +27,7 @@ export default defineConfig(({ mode }) => ({
   
   // Latest build optimizations for enhanced performance
   build: {
-    target: 'es2020', // Updated target for better modern browser support
+    target: 'es2020',
     minify: 'terser',
     sourcemap: false,
     
@@ -55,7 +37,6 @@ export default defineConfig(({ mode }) => ({
           vendor: ['react', 'react-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-toast', '@radix-ui/react-tabs'],
           utils: ['lucide-react', 'clsx', 'tailwind-merge'],
-          supabase: ['@supabase/supabase-js']
         }
       }
     },
@@ -64,7 +45,6 @@ export default defineConfig(({ mode }) => ({
     reportCompressedSize: false,
     assetsInlineLimit: 4096,
     
-    // Enhanced CSS optimization
     cssCodeSplit: true,
     cssMinify: true,
   },
@@ -75,7 +55,6 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     open: true,
     cors: true,
-    // Enhanced HMR for better development experience
     hmr: {
       overlay: true,
       clientPort: 8080
@@ -113,8 +92,7 @@ export default defineConfig(({ mode }) => ({
       '@radix-ui/react-dialog',
       '@radix-ui/react-toast',
       'lucide-react'
-    ],
-    exclude: ['@supabase/supabase-js']
+    ]
   },
   
   // Enhanced define for environment variables
