@@ -2,14 +2,26 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import { componentTagger } from "lovable-tagger"
 
 // Latest Lovable Vite configuration with enhanced optimizations
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    // Enhanced component tagger for latest Lovable features
-    mode === 'development' && componentTagger()
+    // Enhanced component tagger for latest Lovable features (conditional loading)
+    ...(mode === 'development' ? [
+      {
+        name: 'lovable-tagger-loader',
+        configResolved: async () => {
+          try {
+            const { componentTagger } = await import('lovable-tagger')
+            return componentTagger()
+          } catch (error) {
+            console.warn('lovable-tagger not available, skipping...')
+            return null
+          }
+        }
+      }
+    ] : [])
   ].filter(Boolean),
   
   // Enhanced path resolution with latest aliases
