@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => ({
     cors: true
   },
   
-  // Latest esbuild optimizations
+  // Latest esbuild optimizations - removed conflicting options
   esbuild: {
     drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
     legalComments: 'none',
